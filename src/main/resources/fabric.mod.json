@@ -1,35 +1,115 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
-  "version": "${version}",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
-  "authors": [
-    "Me!"
-  ],
-  "contact": {
-    "homepage": "https://legacyfabric.net/",
-    "sources": "https://github.com/Legacy-Fabric/fabric-example-mod"
-  },
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-  "environment": "*",
+  "id": "modmenu",
+  "name": "Mod Menu",
+  "version": "$version",
+  "environment": "client",
+  "license": "MIT",
+  "icon": "assets/modmenu/icon.png",
   "entrypoints": {
-    "main": [
-      "net.fabricmc.example.ExampleMod"
+    "client": [
+      "com.terraformersmc.modmenu.ModMenu"
     ],
     "btw:addon": [
-      "btw.community.example.ExampleAddon"
+      "com.terraformersmc.modmenu.ModMenuBTW"
+    ],
+    "modmenu": [
+      "com.terraformersmc.modmenu.ModMenuModMenuCompat"
     ]
   },
-  "custom": {
-    "btw:addon_prefix": "EX"
+  "contact": {
+    "homepage": "https://modrinth.com/mod/modmenu",
+    "sources": "https://github.com/MinecraftIsTooEasy/modmenu",
+    "issues": "https://github.com/MinecraftIsTooEasy/modmenu/issues"
   },
-  "mixins": [
-    "modid.mixins.json"
-  ],
   "depends": {
-    "fabricloader": ">=0.14.19",
-    "minecraft": "1.6.4"
+    "minecraft": "1.6.x",
+    "fabricloader": ">=0.12.0"
+  },
+  "authors": [
+    "Prospector",
+    "haykam821",
+    "TerraformersMC",
+    "OrnitheMC",
+    "Xy_Lose"
+  ],
+  "contributors": [
+    "shedaniel",
+    "Draylar",
+    "Mordna",
+    "Madis0",
+    "Yanis48",
+    "LemmaEOF",
+    "fewizz",
+    "XuyuEre",
+    "geniiii",
+    "thiagokenis",
+    "Juuxel",
+    "Chloe Dawn",
+    "modmuss50",
+    "Patbox",
+    "Lykrast",
+    "Pyrofab",
+    "UpcraftLP",
+    "swordglowsblue",
+    "hinataaki",
+    "LeonXu98",
+    "magneticflux",
+    "vanja-san",
+    "AlexIIL",
+    "masoncook16",
+    "el97",
+    "Hephaestus-Dev",
+    "zabi94",
+    "dexman545",
+    "dhouck",
+    "Hambaka",
+    "po-stulate",
+    "FlashyReese",
+    "egeesin",
+    "TheGlitch76",
+    "ludg1e",
+    "williambl",
+    "PepperCode1",
+    "ThatTrollzer",
+    "ToffeeMax",
+    "kalucky0",
+    "Maaster",
+    "MartrixX",
+    "NotSteven",
+    "Dolphin 2.1",
+    "ENDERZOMBI102",
+    "anatom3000",
+    "OroArmor",
+    "jackassmc",
+    "Vaerian",
+    "RDKRACZ",
+    "Hulenkius",
+    "XfedeX",
+    "spnda",
+    "Jab125",
+    "SolidBlock",
+    "Tkain",
+    "nfitzen",
+    "DenaryDev",
+    "legenden",
+    "NaiNonTH",
+    "MagnusHJensen",
+    "Benjamin-Norton",
+    "triphora",
+    "Pyrrha",
+    "Space Walker"
+  ],
+  "description": "Adds a mod menu to view the list of mods you have installed.",
+  "mixins": [
+    "mixins.modmenu.json"
+  ],
+  "accessWidener": "modmenu.accesswidener",
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/2tSuFhZxS8"
+      }
+    }
   }
 }
