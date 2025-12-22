@@ -14,17 +14,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class ModMenuConfigManager {
-	private static File file;
+	private static Path path;
 
-	private static void prepareConfigFile() {
-		if (file != null) {
-			return;
+	private static void prepareConfigPath() {
+		if (path == null) {
+			path = FabricLoader.getInstance().getConfigDir().resolve(ModMenu.MOD_ID + ".json");
 		}
-		file = new File(FabricLoader.getInstance().getConfigDir().toFile(), ModMenu.MOD_ID + ".json");
 	}
 
 	public static void initializeConfig() {
@@ -33,23 +34,29 @@ public class ModMenuConfigManager {
 
 	@SuppressWarnings("unchecked")
 	private static void load() {
-		prepareConfigFile();
+		prepareConfigPath();
 
 		try {
-			if (!file.exists()) {
+			if (!Files.exists(path)) {
 				save();
 			}
-			if (file.exists()) {
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				JsonObject json = new JsonParser().parse(br).getAsJsonObject();
 
+			if (Files.exists(path)) {
+				BufferedReader br = Files.newBufferedReader(path);
+				JsonObject json = ModMenu.GSON.fromJson(br, JsonObject.class);
 				for (Field field : ModMenuConfig.class.getDeclaredFields()) {
 					if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())) {
 						if (StringSetConfigOption.class.isAssignableFrom(field.getType())) {
 							JsonArray jsonArray = json.getAsJsonArray(field.getName().toLowerCase(Locale.ROOT));
 							if (jsonArray != null) {
 								StringSetConfigOption option = (StringSetConfigOption) field.get(null);
-								ConfigOptionStorage.setStringSet(option.getKey(), Sets.newHashSet(jsonArray).stream().map(JsonElement::getAsString).collect(Collectors.toSet()));
+								ConfigOptionStorage.setStringSet(
+									option.getKey(),
+									Sets.newHashSet(jsonArray)
+										.stream()
+										.map(JsonElement::getAsString)
+										.collect(Collectors.toSet())
+								);
 							}
 						} else if (BooleanConfigOption.class.isAssignableFrom(field.getType())) {
 							JsonPrimitive jsonPrimitive = json.getAsJsonPrimitive(field.getName().toLowerCase(Locale.ROOT));
@@ -70,6 +77,7 @@ public class ModMenuConfigManager {
 											break;
 										}
 									}
+
 									if (found != null) {
 										ConfigOptionStorage.setEnumTypeless(option.getKey(), found);
 									}
@@ -79,7 +87,7 @@ public class ModMenuConfigManager {
 					}
 				}
 			}
-		} catch (FileNotFoundException | IllegalAccessException e) {
+		} catch (IOException | IllegalAccessException e) {
 			System.err.println("Couldn't load Mod Menu configuration file; reverting to defaults");
 			e.printStackTrace();
 		}
@@ -88,10 +96,8 @@ public class ModMenuConfigManager {
 	@SuppressWarnings("unchecked")
 	public static void save() {
 		ModMenu.clearModCountCache();
-		prepareConfigFile();
-
+		prepareConfigPath();
 		JsonObject config = new JsonObject();
-
 		try {
 			for (Field field : ModMenuConfig.class.getDeclaredFields()) {
 				if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())) {
@@ -117,8 +123,7 @@ public class ModMenuConfigManager {
 		}
 
 		String jsonString = ModMenu.GSON.toJson(config);
-
-		try (FileWriter fileWriter = new FileWriter(file)) {
+		try (BufferedWriter fileWriter = Files.newBufferedWriter(path)) {
 			fileWriter.write(jsonString);
 		} catch (IOException e) {
 			System.err.println("Couldn't save Mod Menu configuration file");

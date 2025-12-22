@@ -1,7 +1,7 @@
 package com.terraformersmc.modmenu;
 
-import btw.AddonHandler;
-import btw.BTWAddon;
+import api.AddonHandler;
+import api.BTWAddon;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ModMenuBTW extends BTWAddon {

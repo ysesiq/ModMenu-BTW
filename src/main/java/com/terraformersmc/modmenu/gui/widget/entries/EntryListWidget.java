@@ -13,8 +13,8 @@ public abstract class EntryListWidget extends GuiSlot {
 
 	private boolean scrolling;
 
-	public EntryListWidget(Minecraft minecraft, int i, int j, int k, int l, int m) {
-		super(minecraft, i, j, k, l, m);
+	public EntryListWidget(Minecraft minecraft, int width, int height, int top, int bottom, int slotHeight) {
+		super(minecraft, width, height, top, bottom, slotHeight);
 	}
 
 	@Override
@@ -40,10 +40,10 @@ public abstract class EntryListWidget extends GuiSlot {
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
 		this.drawBackground();
-		int n6 = this.getSize();
-		int n7 = this.getScrollBarX();
-		int n8 = n7 + 6;
-		if (mouseX == n7)
+		int getSize = this.getSize();
+		int scrollbarMinX = this.getScrollBarX();
+		int scrollbarMaxX = scrollbarMinX + 6;
+		if (mouseX == scrollbarMinX)
 			this.setScrolling(true);
 		if (mouseX > this.left && mouseX < this.right && mouseY > this.top && mouseY < this.bottom) {
 			int n9;
@@ -55,7 +55,7 @@ public abstract class EntryListWidget extends GuiSlot {
 						n5 = this.width / 2 + this.getRowWidth() / 2;
 						n4 = mouseY - this.top - this.field_77242_t + (int) this.amountScrolled - 4;
 						n3 = n4 / this.slotHeight;
-						if (mouseX >= n10 && mouseX <= n5 && n3 >= 0 && n4 >= 0 && n3 < n6) {
+						if (mouseX >= n10 && mouseX <= n5 && n3 >= 0 && n4 >= 0 && n3 < getSize) {
 							n2 = n3 == this.selectedElement && Minecraft.getSystemTime() - this.lastClicked < 250L ? 1 : 0;
 							this.elementClicked(n3, n2 != 0);
 							this.selectedElement = n3;
@@ -64,7 +64,7 @@ public abstract class EntryListWidget extends GuiSlot {
 							this.func_77224_a(mouseX - n10, mouseY - this.top + (int) this.amountScrolled - 4);
 							n9 = 0;
 						}
-						if (mouseX >= n7 && mouseX <= n8) {
+						if (mouseX >= scrollbarMinX && mouseX <= scrollbarMaxX) {
 							this.scrollMultiplier = -1.0f;
 							n2 = this.func_77209_d();
 							if (n2 < 1) {
@@ -129,7 +129,7 @@ public abstract class EntryListWidget extends GuiSlot {
 			this.func_77222_a(n5, n4, bufferBuilder);
 		}
 		this.renderList(n5, n4, mouseX, mouseY);
-		GL11.glDisable(2929);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		n3 = 4;
 		this.renderHoleBackground(0, this.top, 255, 255);
 		this.renderHoleBackground(this.bottom, this.height, 255, 255);
@@ -169,24 +169,24 @@ public abstract class EntryListWidget extends GuiSlot {
 			}
 			bufferBuilder.start();
 			bufferBuilder.color(0, 255);
-			bufferBuilder.vertex(n7, this.bottom, 0.0, 0.0, 1.0);
-			bufferBuilder.vertex(n8, this.bottom, 0.0, 1.0, 1.0);
-			bufferBuilder.vertex(n8, this.top, 0.0, 1.0, 0.0);
-			bufferBuilder.vertex(n7, this.top, 0.0, 0.0, 0.0);
+			bufferBuilder.vertex(scrollbarMinX, this.bottom, 0.0, 0.0, 1.0);
+			bufferBuilder.vertex(scrollbarMaxX, this.bottom, 0.0, 1.0, 1.0);
+			bufferBuilder.vertex(scrollbarMaxX, this.top, 0.0, 1.0, 0.0);
+			bufferBuilder.vertex(scrollbarMinX, this.top, 0.0, 0.0, 0.0);
 			bufferBuilder.end();
 			bufferBuilder.start();
 			bufferBuilder.color(0x808080, 255);
-			bufferBuilder.vertex(n7, n11 + n, 0.0, 0.0, 1.0);
-			bufferBuilder.vertex(n8, n11 + n, 0.0, 1.0, 1.0);
-			bufferBuilder.vertex(n8, n11, 0.0, 1.0, 0.0);
-			bufferBuilder.vertex(n7, n11, 0.0, 0.0, 0.0);
+			bufferBuilder.vertex(scrollbarMinX, n11 + n, 0.0, 0.0, 1.0);
+			bufferBuilder.vertex(scrollbarMaxX, n11 + n, 0.0, 1.0, 1.0);
+			bufferBuilder.vertex(scrollbarMaxX, n11, 0.0, 1.0, 0.0);
+			bufferBuilder.vertex(scrollbarMinX, n11, 0.0, 0.0, 0.0);
 			bufferBuilder.end();
 			bufferBuilder.start();
 			bufferBuilder.color(0xC0C0C0, 255);
-			bufferBuilder.vertex(n7, n11 + n - 1, 0.0, 0.0, 1.0);
-			bufferBuilder.vertex(n8 - 1, n11 + n - 1, 0.0, 1.0, 1.0);
-			bufferBuilder.vertex(n8 - 1, n11, 0.0, 1.0, 0.0);
-			bufferBuilder.vertex(n7, n11, 0.0, 0.0, 0.0);
+			bufferBuilder.vertex(scrollbarMinX, n11 + n - 1, 0.0, 0.0, 1.0);
+			bufferBuilder.vertex(scrollbarMaxX - 1, n11 + n - 1, 0.0, 1.0, 1.0);
+			bufferBuilder.vertex(scrollbarMaxX - 1, n11, 0.0, 1.0, 0.0);
+			bufferBuilder.vertex(scrollbarMinX, n11, 0.0, 0.0, 0.0);
 			bufferBuilder.end();
 		}
 		this.func_77215_b(mouseX, mouseY);
@@ -242,23 +242,24 @@ public abstract class EntryListWidget extends GuiSlot {
 		bufferBuilder.end();
 	}
 
-//	@Override
 	protected void drawSlot(int index, int x, int y, int slotHeight, BufferBuilder bufferBuilder) {
 		this.getEntry(index).render(index, x, y, this.getRowWidth(), slotHeight, bufferBuilder, mouseX, mouseY, this.func_77210_c(mouseX, mouseY) == index);
 	}
 
 	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 		int n;
-		if (this.isMouseInList(mouseY) && (n = this.func_77210_c(mouseX, mouseY)) >= 0) {
-			int n2 = this.left + (this.width / 2 - this.getRowWidth() / 2 + 2);
-			int n3 = this.top + 4 - this.getScrollAmount() + (n * this.slotHeight + this.field_77242_t);
-			int n4 = mouseX - n2;
-			int n5 = mouseY - n3;
-			if (this.getEntry(n).mouseClicked(n, mouseX, mouseY, button, n4, n5)) {
-//				this.setScrolling(false);
-				return true;
+		if (this.isMouseInList(mouseY)) {
+			n = this.getEntryAt(mouseX, mouseY);
+			if (n >= 0) {
+				int n2 = this.left + (this.width / 2 - this.getRowWidth() / 2 + 2);
+				int n3 = this.top + 4 - this.getScrollAmount() + (n * this.slotHeight + this.field_77242_t);
+				int n4 = mouseX - n2;
+				int n5 = mouseY - n3;
+				if (this.getEntry(n).mouseClicked(n, mouseX, mouseY, button, n4, n5)) {
+					this.setScrolling(false);
+					return true;
+				}
 			}
-			Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		return false;
 	}
@@ -271,8 +272,16 @@ public abstract class EntryListWidget extends GuiSlot {
 			int n4 = mouseY - n2;
 			this.getEntry(i).mouseReleased(i, mouseX, mouseY, button, n3, n4);
 		}
-//		this.setScrolling(true);
+		this.setScrolling(true);
 		return false;
+	}
+
+	public int getEntryAt(int mouseX, int mouseY) {
+		int i = this.left + this.width / 2 - this.getRowWidth() / 2;
+		int j = this.left + this.width / 2 + this.getRowWidth() / 2;
+		int k = mouseY - this.top - this.field_77242_t + (int) this.amountScrolled - 4;
+		int l = k / this.slotHeight;
+		return mouseX < this.getScrollBarX() && mouseX >= i && mouseX <= j && l >= 0 && k >= 0 && l < this.getSize() ? l : -1;
 	}
 
 	public abstract Entry getEntry(int var1);
@@ -306,9 +315,9 @@ public abstract class EntryListWidget extends GuiSlot {
 
 		void render(int var1, int var2, int var3, int var4, int var5, BufferBuilder var6, int var7, int var8, boolean var9);
 
-		boolean mouseClicked(int var1, int var2, int var3, int var4, int var5, int var6);
+		boolean mouseClicked(int index, int mouseX, int mouseY, int button, int entryMouseX, int entryMouseY);
 
-		void mouseReleased(int var1, int var2, int var3, int var4, int var5, int var6);
+		void mouseReleased(int index, int mouseX, int mouseY, int button, int entryMouseX, int entryMouseY);
 
 	}
 }

@@ -315,17 +315,17 @@ public class ModsScreen extends GuiScreen implements Controller {
 			if (!ModMenuConfig.CONFIG_MODE.getValue() && updateFiltersX()) {
 				if (filterOptionsShown) {
 					if (!ModMenuConfig.SHOW_LIBRARIES.getValue() || fontRenderer.getStringWidth(fullModCount.toStringWithFormatting(true)) <= filtersX - 5) {
-						this.fontRenderer.drawString(fullModCount.toStringWithFormatting(true), searchBoxX, 52, 0xFFFFFF);
+						this.fontRenderer.drawStringWithShadow(fullModCount.toStringWithFormatting(true), searchBoxX, 52, 0xFFFFFF);
 					} else {
-						this.fontRenderer.drawString(computeModCountText(false).toStringWithFormatting(true), searchBoxX, 46, 0xFFFFFF);
-						this.fontRenderer.drawString(computeLibraryCountText().toStringWithFormatting(true), searchBoxX, 57, 0xFFFFFF);
+						this.fontRenderer.drawStringWithShadow(computeModCountText(false).toStringWithFormatting(true), searchBoxX, 46, 0xFFFFFF);
+						this.fontRenderer.drawStringWithShadow(computeLibraryCountText().toStringWithFormatting(true), searchBoxX, 57, 0xFFFFFF);
 					}
 				} else {
 					if (!ModMenuConfig.SHOW_LIBRARIES.getValue() || fontRenderer.getStringWidth(fullModCount.toStringWithFormatting(true)) <= modList.getWidth() - 5) {
-						this.fontRenderer.drawString(fullModCount.toStringWithFormatting(true), searchBoxX, 52, 0xFFFFFF);
+						this.fontRenderer.drawStringWithShadow(fullModCount.toStringWithFormatting(true), searchBoxX, 52, 0xFFFFFF);
 					} else {
-						this.fontRenderer.drawString(computeModCountText(false).toStringWithFormatting(true), searchBoxX, 46, 0xFFFFFF);
-						this.fontRenderer.drawString(computeLibraryCountText().toStringWithFormatting(true), searchBoxX, 57, 0xFFFFFF);
+						this.fontRenderer.drawStringWithShadow(computeModCountText(false).toStringWithFormatting(true), searchBoxX, 46, 0xFFFFFF);
+						this.fontRenderer.drawStringWithShadow(computeLibraryCountText().toStringWithFormatting(true), searchBoxX, 57, 0xFFFFFF);
 					}
 				}
 			}
@@ -350,7 +350,7 @@ public class ModsScreen extends GuiScreen implements Controller {
 				ChatMessageComponent ellipsis = ChatMessageComponent.createFromText("...");
 				trimmedName = ChatMessageComponent.createFromText("").addText(fontRenderer.trimStringToWidth(name.toStringWithFormatting(true), maxNameWidth - fontRenderer.getStringWidth(ellipsis.toStringWithFormatting(true)))).appendComponent(ellipsis);
 			}
-			this.fontRenderer.drawString(trimmedName.toStringWithFormatting(true), x + imageOffset, RIGHT_PANE_Y + 1, 0xFFFFFF);
+			this.fontRenderer.drawStringWithShadow(trimmedName.toStringWithFormatting(true), x + imageOffset, RIGHT_PANE_Y + 1, 0xFFFFFF);
 			if (mouseX > x + imageOffset && mouseY > RIGHT_PANE_Y + 1 && mouseY < RIGHT_PANE_Y + 1 + fontRenderer.FONT_HEIGHT && mouseX < x + imageOffset + fontRenderer.getStringWidth(trimmedName.toStringWithFormatting(true))) {
 				setTooltip(Arrays.asList(I18n.getStringParams("modmenu.modIdToolTip", mod.getId())));
 			}
@@ -362,7 +362,7 @@ public class ModsScreen extends GuiScreen implements Controller {
 				modBadgeRenderer.draw(mouseX, mouseY);
 			}
 			if (mod.isReal()) {
-				this.fontRenderer.drawString(mod.getPrefixedVersion(), x + imageOffset, RIGHT_PANE_Y + 2 + lineSpacing, 0x808080);
+				this.fontRenderer.drawStringWithShadow(mod.getPrefixedVersion(), x + imageOffset, RIGHT_PANE_Y + 2 + lineSpacing, 0x808080);
 			}
 			String authors;
 			List<String> names = mod.getAuthors();
@@ -481,7 +481,7 @@ public class ModsScreen extends GuiScreen implements Controller {
 	}
 
 	protected void renderTooltip(String text, int x, int y) {
-		this.renderTooltip(Arrays.asList(text), x, y);
+		this.renderTooltip(Collections.singletonList(text), x, y);
 	}
 
 	protected void renderTooltip(List<String> text, int x, int y) {
@@ -489,10 +489,10 @@ public class ModsScreen extends GuiScreen implements Controller {
 		if (text.isEmpty()) {
 			return;
 		}
-		GL11.glDisable(32826);
-		Lighting.turnOff();
-		GL11.glDisable(2896);
-		GL11.glDisable(2929);
+//		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+//		Lighting.turnOff();
+//		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		int n2 = 0;
 		for (String string : text) {
 			n = this.fontRenderer.getStringWidth(string);
@@ -514,7 +514,7 @@ public class ModsScreen extends GuiScreen implements Controller {
 			n4 = this.height - n5 - 6;
 		}
 		this.zLevel = 300.0f;
-		ModsScreen.itemRenderer.zLevel = 300.0f;
+//		ModsScreen.itemRenderer.zLevel = 300.0f;
 		int n6 = -267386864;
 		this.drawGradientRect(n3 - 3, n4 - 4, n3 + n + 3, n4 - 3, n6, n6);
 		this.drawGradientRect(n3 - 3, n4 + n5 + 3, n3 + n + 3, n4 + n5 + 4, n6, n6);
@@ -528,7 +528,7 @@ public class ModsScreen extends GuiScreen implements Controller {
 		this.drawGradientRect(n3 - 3, n4 - 3, n3 + n + 3, n4 - 3 + 1, n7, n7);
 		this.drawGradientRect(n3 - 3, n4 + n5 + 2, n3 + n + 3, n4 + n5 + 3, n8, n8);
 		for (int i = 0; i < text.size(); ++i) {
-			String string = (String) text.get(i);
+			String string = text.get(i);
 			this.fontRenderer.drawStringWithShadow(string, n3, n4, -1);
 			if (i == 0) {
 				n4 += 2;
@@ -536,10 +536,10 @@ public class ModsScreen extends GuiScreen implements Controller {
 			n4 += 10;
 		}
 		this.zLevel = 0.0f;
-		ModsScreen.itemRenderer.zLevel = 0.0f;
-		GL11.glEnable(2896);
-		GL11.glEnable(2929);
-		Lighting.turnOn();
-		GL11.glEnable(32826);
+//		ModsScreen.itemRenderer.zLevel = 0.0f;
+//		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+//		Lighting.turnOn();
+//		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 	}
 }

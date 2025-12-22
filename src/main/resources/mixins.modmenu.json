@@ -8,6 +8,8 @@
     "AccessorI18n",
     "AccessorTranslationStorage",
     "MixinGameMenu",
+    "MixinGameSettings",
+    "MixinMinecraftClient",
     "MixinTextFieldWidget",
     "MixinTitleScreen"
   ],
