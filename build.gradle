@@ -30,6 +30,9 @@ repositories {
 		url = "https://repo.spongepowered.org/repository/maven-public/"
 	}
 	maven {
+		url = "https://repo1.maven.org/maven2"
+	}
+	maven {
 		url 'https://maven.fallenbreath.me/releases'
 	}
     maven {
@@ -59,8 +62,8 @@ dependencies {
 
 	implementation 'net.fabricmc:fabric-loom:1.5-SNAPSHOT'
 
-	implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
-	implementation 'org.apache.logging.log4j:log4j-api:2.19.0'
+	implementation('org.apache.logging.log4j:log4j-core:2.19.0')
+	implementation('org.apache.logging.log4j:log4j-api:2.19.0')
 
 	implementation "org.lwjgl.lwjgl:lwjgl_util:${lwjglVersion}"
 	implementation "org.lwjgl.lwjgl:lwjgl:${lwjglVersion}"
@@ -79,8 +82,9 @@ dependencies {
 
 	implementation 'org.apache.commons:commons-lang3:3.13.0'
 
-	include('org.apache.httpcomponents:httpclient:4.5.14')
-	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+	include(modImplementation('org.apache.httpcomponents:httpclient:4.5.14'))
+	include('org.apache.httpcomponents:httpcore:4.4.16')
+	include('commons-logging:commons-logging:1.2')
 }
 
 configurations {
